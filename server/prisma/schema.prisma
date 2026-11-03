@@ -59,7 +59,7 @@ model ChatMember {
   userId     Int
   chat       Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId     Int
-  role       ChatRole  @default(MEMBER)
+  chatRole       ChatRole  @default(MEMBER)
   joinedAt   DateTime  @default(now())
   lastReadAt DateTime?
 
