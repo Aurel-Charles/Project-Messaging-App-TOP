@@ -1,13 +1,17 @@
 import "dotenv/config";
 import express from 'express'
 import cors from "cors";
+import cookieParser from "cookie-parser"
 
 export const app = express()
 
 
-app.use(cors({origin: process.env.CORS_ORIGINS.split(',')}))
+app.use(cors({
+  origin: process.env.CORS_ORIGINS.split(','),
+  credentials: true
+}))
 app.use(express.json())
-
+app.use(cookieParser())
 // Routes
 
 
