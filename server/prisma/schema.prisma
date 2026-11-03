@@ -11,3 +11,80 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ChatRole {
+  MEMBER
+  ADMIN
+}
+
+enum FriendShipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model User {
+  id                Int          @id @default(autoincrement())
+  firstname         String
+  lastname          String
+  email             String       @unique
+  password          String
+  passwordChangedAt DateTime     @default(now())
+  role              Role         @default(USER)
+  profilePicture    String?
+  lastSeenAt        DateTime     @default(now())
+  createdAt         DateTime     @default(now())
+  memberships       ChatMember[]
+  messages          Message[]
+  sentRequests      Friendship[] @relation("SentRequests")
+  receiveRequests   Friendship[] @relation("ReceiveRequests")
+}
+
+model Chat {
+  id        Int          @id @default(autoincrement())
+  title     String?
+  isGroup   Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  members   ChatMember[]
+  messages  Message[]
+}
+
+model ChatMember {
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  chat       Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId     Int
+  role       ChatRole  @default(MEMBER)
+  joinedAt   DateTime  @default(now())
+  lastReadAt DateTime?
+
+  @@id([userId, chatId])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId  Int?
+  content   String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+}
+
+model Friendship {
+  id          Int              @id @default(autoincrement())
+  requester   User             @relation("SentRequests", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId Int
+  receiver    User             @relation("ReceiveRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId  Int
+  status      FriendShipStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+
+  @@unique([requesterId, receiverId])
+}
