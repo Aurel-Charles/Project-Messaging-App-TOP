@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail } from "../db/queries/userQueries.js";
+import { createUser, getUserByEmail, getUserById, getUserWithPasswordByEmail } from "../db/queries/userQueries.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
 import { createToken } from "../utils/createToken.js";
 import { HttpError } from "../utils/httpErrorHandler.js";
@@ -28,30 +28,36 @@ export async function register(req, res) {
     res.status(201).json(registeredUser)
 }
 
-// export async function login(req, res){
-//     const {email , password} = req.body 
-//     const user = await getUserByEmail(email)
-//     if (user === null) {
-//         throw new HttpError("Email or Password is wrong", 401);
-//     }
+export async function login(req, res){
+    const {email , password} = req.body 
+    const user = await getUserWithPasswordByEmail(email)
+    if (user === null) {
+        throw new HttpError("Email or Password is wrong", 401);
+    }
     
-//     const isPasswordCorrect = await verifyPassword(password , user.password)
-//     if (!isPasswordCorrect) {
-//         throw new HttpError("Email or Password is wrong", 401);
-//     }
+    const isPasswordCorrect = await verifyPassword(password , user.password)
+    if (!isPasswordCorrect) {
+        throw new HttpError("Email or Password is wrong", 401);
+    }
 
-//     const token = createToken(user)
-    
-//     res.json({token})
-// }
+    const token = createToken(user)
+    delete user.password
+    res.cookie("token", token, cookieOptions)
+    res.json(user)
+}
 
 
-// export async function getMe(req, res) {
-//     const userId = req.user.id
-//     const user = await getUserByID(userId)
-//     if (!user) throw new HttpError("User not found", 401)
-//     res.status(200).json(user)
-// }
+export async function getMe(req, res) {
+    const userId = req.user.id
+    const user = await getUserById(userId)
+    if (!user) throw new HttpError("User not found", 401)
+    res.status(200).json(user)
+}
+
+export function logout(req, res) {
+    res.clearCookie("token", cookieOptions)
+    res.status(204).end()
+}
 
 // export async function getAllUserComments(req, res) {
 //     const comments = await getCommentsByAuthor(req.user.id)
