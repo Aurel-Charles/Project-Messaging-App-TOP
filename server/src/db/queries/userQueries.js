@@ -33,3 +33,15 @@ export async function createUser(data) {
     return user
 }
 
+
+export async function touchLastSeenById(id) {
+    const user = await prisma.user.update({
+        where: {id},
+        data: {
+            lastSeenAt: new Date()
+        }
+    })
+    return user
+}
+
+

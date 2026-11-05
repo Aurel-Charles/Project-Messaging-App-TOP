@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail, getUserById, getUserWithPasswordByEmail } from "../db/queries/userQueries.js";
+import { createUser, getUserByEmail, getUserById, getUserWithPasswordByEmail, touchLastSeenById } from "../db/queries/userQueries.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
 import { createToken } from "../utils/createToken.js";
 import { HttpError } from "../utils/httpErrorHandler.js";
@@ -42,6 +42,8 @@ export async function login(req, res){
 
     const token = createToken(user)
     delete user.password
+
+    await touchLastSeenById(user.id)
     res.cookie("token", token, cookieOptions)
     res.json(user)
 }
