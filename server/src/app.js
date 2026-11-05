@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import { authRouter } from "./routes/authRoutes.js";
 import { isAuth } from "./middlewares/auth.js";
+import { usersRouter } from "./routes/usersRoutes.js";
 
 export const app = express()
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(cookieParser())
 // Routes
 app.use("/auth", authRouter)
+app.use("/users", usersRouter)
 
 app.get('/', (req,res)=> {
     res.json({App: process.env.APP_NAME, message : process.env.APP_MESSAGE})

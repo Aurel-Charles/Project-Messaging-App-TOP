@@ -1,5 +1,13 @@
 import { prisma } from "../prisma.js";
 
+const publicUserFields = {
+    id: true,
+    firstname: true,
+    lastname: true,
+    profilePicture: true,
+    lastSeenAt: true
+}
+
 export async function getUserWithPasswordByEmail(email) {
     const user = await prisma.user.findUnique({
         where: {email},
@@ -44,4 +52,18 @@ export async function touchLastSeenById(id) {
     return user
 }
 
+export async function getAllUsers() {
+    const users = await prisma.user.findMany({
+        select: publicUserFields,
+        orderBy : {firstname : "asc"}
+    })
+    return users
+}
 
+export async function getPublicUserById(id) {
+    const user = await prisma.user.findUnique({
+        where: {id},
+        select: publicUserFields
+    })
+    return user
+}
