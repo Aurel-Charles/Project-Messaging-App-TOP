@@ -36,7 +36,7 @@ model User {
   password          String
   passwordChangedAt DateTime     @default(now())
   role              Role         @default(USER)
-  profilePicture    String?
+  avatarUrl    String?
   lastSeenAt        DateTime     @default(now())
   createdAt         DateTime     @default(now())
   memberships       ChatMember[]

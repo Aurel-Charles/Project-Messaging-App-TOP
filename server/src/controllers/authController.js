@@ -2,7 +2,7 @@ import { createUser, getUserByEmail, getUserById, getUserWithPasswordByEmail, to
 import { cookieOptions } from "../utils/cookieOptions.js";
 import { createToken } from "../utils/createToken.js";
 import { HttpError } from "../utils/httpErrorHandler.js";
-import { createPassword, verifyPassword } from "../utils/verifyPassword.js";
+import { createPassword, verifyPassword } from "../utils/managePassword.js";
 
 export async function register(req, res) {
     const {firstname, lastname, email, password} = req.body

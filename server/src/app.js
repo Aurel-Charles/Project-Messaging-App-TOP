@@ -3,8 +3,8 @@ import express from 'express'
 import cors from "cors";
 import cookieParser from "cookie-parser"
 import { authRouter } from "./routes/authRoutes.js";
-import { isAuth } from "./middlewares/auth.js";
 import { usersRouter } from "./routes/usersRoutes.js";
+import multer from "multer";
 
 export const app = express()
 
@@ -28,6 +28,9 @@ app.use((req, res) => {
   });
 
 app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: err.message });
+  }
   const status = err.statusCode || 500;
     if (status >= 500) console.error(err);
     const message = status === 500 ? "Internal server error" : err.message;

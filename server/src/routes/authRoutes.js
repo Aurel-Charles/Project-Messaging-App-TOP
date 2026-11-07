@@ -6,8 +6,10 @@ import { updateLastSeen } from "../middlewares/updateLastSeen.js"
 
 export const authRouter = Router()
 
+// GET
+authRouter.get('/me',isAuth,updateLastSeen, getMe)
 
+// POST
 authRouter.post('/register',validateRegister, handleValidation, register)
 authRouter.post('/login',validateLogin, handleValidation, login)
-authRouter.get('/me',isAuth,updateLastSeen, getMe)
 authRouter.post('/logout', logout)
