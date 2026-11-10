@@ -1,4 +1,4 @@
-import { createFriendRequest, findFriendshipBetween } from "../db/queries/friendshipQueries.js"
+import { createFriendRequest, findFriendshipBetween, getReceivedRequests, getSentRequests } from "../db/queries/friendshipQueries.js"
 import { getUserById } from "../db/queries/userQueries.js"
 import { HttpError } from "../utils/httpErrorHandler.js"
 
@@ -19,4 +19,17 @@ export async function sendFriendRequest(req, res) {
     }
     friendship = await createFriendRequest(requesterId, receiverId)
     res.status(201).json(friendship)
+}
+
+export async function getFriendRequests(req, res) {
+    const userId = req.user.id
+    const type = req.query.type
+    let requests
+    if (type === "sent") {
+        requests = await getSentRequests(userId)
+    }
+    else if (!type || type === "received") {
+        requests = await getReceivedRequests(userId)
+    }
+    res.status(200).json(requests)
 }

@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator"
+import { body, query, validationResult } from "express-validator"
 
 
 export const validateLogin = [
@@ -70,6 +70,13 @@ export const validateFriendRequest = [
     .trim()
     .isInt({min: 1}).withMessage("Receiver id must be an integer")
     .toInt()
+]
+
+export const validateFriendRequestsQuery = [
+    query("type")
+    .optional()
+    .trim()
+    .isIn(["sent","received"]).withMessage("type must be sent or received")
 ]
 
 

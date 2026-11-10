@@ -74,7 +74,7 @@ export async function updateUserById(id, data) {
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 // public Queries , use a const of public fields in select to return fields 
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-const publicUserFields = {
+export const publicUserFields = {
     id: true,
     firstname: true,
     lastname: true,
