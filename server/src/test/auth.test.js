@@ -2,14 +2,11 @@ import { afterAll, beforeEach, describe, expect, test } from "vitest";
 import  request  from "supertest";
 import { app } from "../app";
 import { prisma } from "../db/prisma";
+import { resetDb } from "./helper";
 
 
 beforeEach(async()=> {
-    await prisma.friendship.deleteMany()
-    await prisma.chatMember.deleteMany()
-    await prisma.message.deleteMany()
-    await prisma.chat.deleteMany()
-    await prisma.user.deleteMany()
+    await resetDb()
 })
 afterAll(async()=> {
     await prisma.$disconnect()
