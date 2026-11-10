@@ -65,6 +65,14 @@ export const validateUpdateEmail = [
 ]
 
 
+export const validateFriendRequest = [
+    body("receiverId")
+    .trim()
+    .isInt({min: 1}).withMessage("Receiver id must be an integer")
+    .toInt()
+]
+
+
 // -----------
 export function handleValidation(req, res, next) {
   const errors = validationResult(req);
