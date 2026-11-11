@@ -79,6 +79,12 @@ export const validateFriendRequestsQuery = [
     .isIn(["sent","received"]).withMessage("type must be sent or received")
 ]
 
+export const validateFriendRequestAnswer = [
+    body("status")
+    .trim()
+    .isIn(["ACCEPTED","DECLINED"]).withMessage("status must be ACCEPTED or DECLINED")
+]
+
 
 // -----------
 export function handleValidation(req, res, next) {

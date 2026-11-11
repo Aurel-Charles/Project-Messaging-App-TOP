@@ -1,6 +1,7 @@
-import { createFriendRequest, findFriendshipBetween, getReceivedRequests, getSentRequests } from "../db/queries/friendshipQueries.js"
+import { createFriendRequest, deleteFriendshipById, findFriendshipBetween, getFriendshipById, getReceivedRequests, getSentRequests, updateFriendshipStatus } from "../db/queries/friendshipQueries.js"
 import { getUserById } from "../db/queries/userQueries.js"
 import { HttpError } from "../utils/httpErrorHandler.js"
+import { parseIdParam } from "../utils/parseIdParam.js"
 
 
 export async function sendFriendRequest(req, res) {
@@ -14,7 +15,10 @@ export async function sendFriendRequest(req, res) {
     }
     let friendship
     friendship = await findFriendshipBetween(requesterId, receiverId)
-    if (friendship !== null) {
+    if (friendship !== null && friendship.status === "DECLINED") {
+        await deleteFriendshipById(friendship.id)
+    }
+    else if (friendship !== null) {
         throw new HttpError('Request already sent', 409)
     }
     friendship = await createFriendRequest(requesterId, receiverId)
@@ -33,3 +37,21 @@ export async function getFriendRequests(req, res) {
     }
     res.status(200).json(requests)
 }
+
+export async function answerFriendRequest(req, res) {
+    const id = parseIdParam(req.params.id)
+    const status = req.body.status
+    const request = await getFriendshipById(id)
+    if (request === null) {
+        throw new HttpError('No friend request found', 404)
+    }
+    if (request.receiverId !== req.user.id) {
+        throw new HttpError("Only the receiver can answer this request", 403)
+    }
+    if (request.status !== "PENDING") {
+        throw new HttpError("This request has already been completed", 409)
+    }
+    const updateFriendRequest = await updateFriendshipStatus(id,status)
+    res.status(200).json(updateFriendRequest)
+}
+

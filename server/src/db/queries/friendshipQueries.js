@@ -52,3 +52,24 @@ export async function getSentRequests(userId) {
     return friendshipRequest
 }
 
+export async function deleteFriendshipById(id) {
+    const friendship = await prisma.friendship.delete({
+        where: {id}
+    })
+}
+
+export async function getFriendshipById(id) {
+    const friendship = await prisma.friendship.findUnique({
+        where: {id}
+    })
+    return friendship
+}
+
+export async function updateFriendshipStatus(id, status) {
+    const friendship = await prisma.friendship.update({
+        where: {id}, 
+        data: {status}
+    })
+    return friendship
+}
+
