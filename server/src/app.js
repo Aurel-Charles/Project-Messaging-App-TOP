@@ -6,6 +6,7 @@ import { authRouter } from "./routes/authRoutes.js";
 import { usersRouter } from "./routes/usersRoutes.js";
 import multer from "multer";
 import { friendRequestsRouter } from "./routes/friendRequestsRoutes.js";
+import { friendsRouter } from "./routes/friendsRoutes.js";
 
 export const app = express()
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use("/auth", authRouter)
 app.use("/users", usersRouter)
 app.use("/friend-requests", friendRequestsRouter)
+app.use("/friends", friendsRouter)
 
 app.get('/', (req,res)=> {
     res.json({App: process.env.APP_NAME, message : process.env.APP_MESSAGE})

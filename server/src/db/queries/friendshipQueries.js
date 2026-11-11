@@ -73,3 +73,20 @@ export async function updateFriendshipStatus(id, status) {
     return friendship
 }
 
+export async function getFriends(userId) {
+    const friendship = await prisma.friendship.findMany({
+        where : {
+            status: "ACCEPTED",
+            OR: [
+                {requesterId: userId},
+                {receiverId: userId}
+            ]
+        },
+        include: {
+            requester: {select : publicUserFields},
+            receiver: {select : publicUserFields}
+        }
+    })
+    return friendship
+}
+
